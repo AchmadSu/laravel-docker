@@ -1,0 +1,66 @@
+# version: '3.8'
+services:
+  app:
+    build: .
+    image: laraveldocker
+    container_name: laraveldocker
+    restart: unless-stopped
+    tty: true
+    environment:
+      - SERVICE_NAME=app
+    working_dir: /var/www/laraveldocker
+    volumes:
+      - .:/var/www/laraveldocker
+      - ./storage/php.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+    - laraveldocker
+  webserver:
+    image: nginx:alpine
+    container_name: nginxlaraveldocker
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "2022:80"
+    volumes:
+      - .:/var/www/laraveldocker
+      - ./storage/:/etc/nginx/conf.d/
+    networks:
+      - laraveldocker
+
+  db:
+    image: mysql:5.7
+    container_name: dblaraveldocker
+    restart: always
+    tty: true
+    ports:
+      - "20222:3306"
+    volumes:
+      - lbdata:/var/lib/mysql
+    environment:
+      MYSQL_PASSWORD: laraveldocker
+      MYSQL_ROOT_PASSWORD: laraveldocker
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laraveldocker
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pmalaraveldocker
+    links:
+      - db
+    restart: always
+    ports:
+      - 7000:80
+    networks:
+      - laraveldocker
+
+# NETWORKS
+networks:
+  laraveldocker:
+    driver: bridge
+
+# VOLUMES
+volumes:
+  lbdata:
+    driver: local
