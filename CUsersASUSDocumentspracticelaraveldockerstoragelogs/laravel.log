@@ -1,0 +1,4 @@
+[2024-11-11 08:35:26] local.ERROR: Access level to App\Services\User\UserServiceImplement::$request must be public (as in class LaravelEasyRepository\Service) {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Access level to App\\Services\\User\\UserServiceImplement::$request must be public (as in class LaravelEasyRepository\\Service) at /var/www/laraveldocker/app/Services/User/UserServiceImplement.php:11)
+[stacktrace]
+#0 {main}
+"} 

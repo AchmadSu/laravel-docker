@@ -13,7 +13,7 @@ class UserController extends Controller
     /**
      * __construct
      *
-     * @param  mixed $userService
+     * @param  App\Services\User\UserService $userService
      * @return void
      */
     public function __construct(UserService $userService)
@@ -25,6 +25,7 @@ class UserController extends Controller
     /**
      * get All User
      *
+     * @param Illuminate\Http\Request $request
      * @return response json
      */
     public function index(Request $request)
@@ -33,7 +34,7 @@ class UserController extends Controller
         if (!empty($email)) {
             $response = $this->userService->getUserByEmail($email);
         } else {
-            $response = $this->userService->getAll();
+            $response = $this->userService->getAll($request);
         }
         return response()->json(
             $response,
@@ -44,7 +45,7 @@ class UserController extends Controller
     /**
      * getUserByEmail
      *
-     * @param  mixed $email
+     * @param  string $email
      * @return response json
      */
     public function getUserByEmail(string $email)
@@ -57,14 +58,46 @@ class UserController extends Controller
     }
 
     /**
+     * login
+     *
+     * @param  Illuminate\Http\Request $request
+     * @return void
+     */
+    public function login(Request $request)
+    {
+        $email = $request->email;
+        $password = $request->password;
+        $response = $this->userService->login($email, $password);
+        return response()->json(
+            $response,
+            $response['statusCode']
+        );
+    }
+
+    /**
      * addUser
      *
-     * @param  mixed $request
+     * @param  Illuminate\Http\Request $request
      * @return response json
      */
     public function addUser(Request $request)
     {
         $response = $this->userService->addUser($request);
+        return response()->json(
+            $response,
+            $response['statusCode']
+        );
+    }
+
+    /**
+     * updateUser
+     *
+     * @param  Illuminate\Http\Request $request
+     * @return void
+     */
+    public function updateUser(Request $request)
+    {
+        $response = $this->userService->updateUser($request);
         return response()->json(
             $response,
             $response['statusCode']

@@ -20,7 +20,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('users', 'index');
-    Route::get('users/{email}', 'getUserByEmail');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('users', 'index');
+        Route::put('users', 'updateUser');
+    });
     Route::post('register', 'addUser');
+    Route::post('auth', 'login');
 });

@@ -10,16 +10,10 @@ interface UserRepository extends Repository
     /**
      * getAll
      *
+     * @param Illuminate\Http\Request $request
      * @return void
      */
-    public function getAll();
-
-    /**
-     * addUser
-     *
-     * @return void
-     */
-    public function addUser(Request $request);
+    public function getAll(Request $request);
 
     /**
      * checkEmail
@@ -28,4 +22,21 @@ interface UserRepository extends Repository
      * @return array
      */
     public function getUserByEmail(string $email);
+
+    /**
+     * addUser
+     *
+     * @param Illuminate\Http\Request $request
+     * @return array
+     */
+    public function addUser(Request $request);
+
+    /**
+     * updateUser
+     *
+     * @param  array $data
+     * @param int $id
+     * @return array
+     */
+    public function updateUser(array $data, int $id);
 }

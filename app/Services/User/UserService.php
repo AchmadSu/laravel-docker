@@ -21,9 +21,10 @@ interface UserService extends BaseService
     /**
      * getAll
      *
+     * @param Illuminate\Http\Request $request
      * @return array
      */
-    public function getAll();
+    public function getAll(Request $request);
 
     /**
      * checkEmail
@@ -34,6 +35,23 @@ interface UserService extends BaseService
     public function getUserByEmail(string $email);
 
     /**
+     * login
+     *
+     * @param  string $email
+     * @param  string $password
+     * @return array
+     */
+    public function login($email, $password);
+
+    /**
+     * logout
+     *
+     * @param  Illuminate\Http\Request $request
+     * @return void
+     */
+    public function logout(Request $request);
+
+    /**
      * addUser
      *
      * @param Illuminate\Http\Request $request
@@ -42,10 +60,26 @@ interface UserService extends BaseService
     public function addUser(Request $request);
 
     /**
-     * validateRegister
+     * updateUser
      *
      * @param  Illuminate\Http\Request $request
      * @return array
      */
+    public function updateUser(Request $request);
+
+    /**
+     * validateRegister
+     *
+     * @param  mixed $input
+     * @return array
+     */
     public function validateRegister($input);
+
+    /**
+     * validateUpdate
+     *
+     * @param  mixed $input
+     * @return array
+     */
+    public function validateUpdate($input);
 }

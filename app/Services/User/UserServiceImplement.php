@@ -5,6 +5,8 @@ namespace App\Services\User;
 use LaravelEasyRepository\Service;
 use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserServiceImplement extends Service implements UserService
 {
@@ -21,7 +23,7 @@ class UserServiceImplement extends Service implements UserService
   /**
    * __construct
    *
-   * @param  mixed $mainRepository
+   * @param App\Repositories\User\UserRepository $mainRepository
    * @return void
    */
   public function __construct(UserRepository $mainRepository)
@@ -51,13 +53,13 @@ class UserServiceImplement extends Service implements UserService
    *
    * @return array
    */
-  public function getALl()
+  public function getALl(Request $request)
   {
     $this->message = "Displaying all user data";
     $data = array();
     try {
       $data = [
-        "data" => $this->mainRepository->getAll()
+        "data" => $this->mainRepository->getAll($request)
       ];
     } catch (\Exception $e) {
       $this->setError($e->getCode(), $e->getMessage());
@@ -90,6 +92,41 @@ class UserServiceImplement extends Service implements UserService
   }
 
   /**
+   * login
+   *
+   * @param  string $email
+   * @param  string $password
+   * @return array
+   */
+  public function login($email, $password)
+  {
+    $this->message = "Login successfuly!";
+    $data = array();
+
+    $credentials = ['email' => $email, 'password' => $password];
+    $checkData = Auth::attempt($credentials);
+    if ($checkData) {
+      $user = Auth::user();
+      $token = $user->createToken('token-name', ['server:update'])->plainTextToken;
+      $data = [
+        "user" => $user,
+        "token" => $token
+      ];
+    } else {
+      $this->setError(401, "Unauthorized. Please check email or password!");
+    }
+
+    $setResponse = $this->setArrayResponse($this->statusCode, $this->isSuccess, $this->message);
+    return $this->setResponse($setResponse, $data);
+  }
+
+  public function logout(Request $request)
+  {
+    $this->message = "Logout Successfuly!";
+    $request->user()->currentAccessToken()->delete();
+  }
+
+  /**
    * addUser
    *
    * @param Illuminate\Http\Request $request
@@ -102,6 +139,27 @@ class UserServiceImplement extends Service implements UserService
       $validateData = $this->validateRegister($request);
       if ($validateData['isSuccess']) {
         $this->mainRepository->addUser($request);
+      } else {
+        $this->setError($validateData['statusCode'], $validateData['message']);
+      }
+    } catch (\Exception $e) {
+      $this->setError($e->getCode(), $e->getMessage());
+    }
+    $setResponse = $this->setArrayResponse($this->statusCode, $this->isSuccess, $this->message);
+    return $this->setResponse($setResponse);
+  }
+
+  public function updateUser(Request $request)
+  {
+    $this->message = "Update user successfully!";
+    try {
+      $validateData = $this->validateUpdate($request);
+      if ($validateData['isSuccess']) {
+        $this->mainRepository->updateUser($validateData['updateData'], Auth::user()->id);
+        if ($validateData['isEmailChanges']) {
+          $this->logout($request);
+          $this->message = "Update user with Email changes, you have to relogin! " . $this->message;
+        }
       } else {
         $this->setError($validateData['statusCode'], $validateData['message']);
       }
@@ -137,6 +195,75 @@ class UserServiceImplement extends Service implements UserService
     ];
 
     $response = $this->validateData($data, $rules);
+    return $response;
+  }
+
+  public function validateUpdate($input)
+  {
+    $data = [
+      'name' => $input['name'],
+      'old_password' => $input['old_password']
+    ];
+
+    $rules = [
+      'name' => 'required',
+      'old_password' => [
+        'required',
+        function ($attribute, $value, $fail) {
+          if (!Hash::check($value, Auth::user()->password)) {
+            $fail('The current password is incorect.');
+          }
+        },
+      ]
+    ];
+
+    if (isset($input['new_password'])) {
+      $passData = [
+        'new_password' => $input['new_password'],
+        'confirm_pass' => $input['confirm_pass']
+      ];
+      $passRules = [
+        'new_password' =>
+        [
+          'required',
+          'string',
+          'min:8',
+          'regex:/[A-Z]/',
+          'regex:/[a-z]/',
+          'regex:/[0-9]/',
+          'regex:/[@$!%*?&]/',
+        ],
+        'confirm_pass' => 'required|same:new_password'
+      ];
+      $this->addKeyValue($data, $passData);
+      $this->addKeyValue($rules, $passRules);
+    }
+
+    if (isset($input['email']) && $input['email'] !== Auth::user()->email) {
+      $emailData = ['email' => $input['email']];
+      $emailRules = ['email' => 'required|email|unique:users,email'];
+      $this->addKeyValue($data, $emailData);
+      $this->addKeyValue($rules, $emailRules);
+    }
+
+    $updateArray = array();
+    $response = $this->validateData($data, $rules);
+    if ($response['isSuccess']) {
+      if (isset($input['email']) && $input['email'] !== Auth::user()->email) {
+        $emailData = ['email' => $input['email']];
+        $this->addKeyValue($updateArray, $emailData);
+        $response['isEmailChanges'] = true;
+      }
+      if (isset($input['name'])) {
+        $nameData = ['name' => $input['name']];
+        $this->addKeyValue($updateArray, $nameData);
+      }
+      if (isset($input['new_password'])) {
+        $passData = ['password' => bcrypt($input['new_password'])];
+        $this->addKeyValue($updateArray, $passData);
+      }
+      $response['updateData'] = $updateArray;
+    }
     return $response;
   }
 }
