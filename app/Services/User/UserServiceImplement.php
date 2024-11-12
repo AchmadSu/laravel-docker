@@ -43,6 +43,7 @@ class UserServiceImplement extends Service implements UserService
    */
   public function setError(int $statusCode, string $message)
   {
+    $statusCode = ($statusCode >= 300 and $statusCode <= 500) ? $statusCode : 500;
     $this->statusCode = $statusCode;
     $this->isSuccess = false;
     $this->message = "Request failed. Error: " . $message;
