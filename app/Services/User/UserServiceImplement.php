@@ -156,9 +156,9 @@ class UserServiceImplement extends Service implements UserService
       $validateData = $this->validateUpdate($request);
       if ($validateData['isSuccess']) {
         $this->mainRepository->updateUser($validateData['updateData'], Auth::user()->id);
-        if ($validateData['isEmailChanges']) {
+        if (isset($validateData['isEmailChanges']) && $validateData['isEmailChanges']) {
           $this->logout($request);
-          $this->message = "Update user with Email changes, you have to relogin! " . $this->message;
+          $this->message = "Update user with email changes, you have to relog in! " . $this->message;
         }
       } else {
         $this->setError($validateData['statusCode'], $validateData['message']);
@@ -255,7 +255,7 @@ class UserServiceImplement extends Service implements UserService
         $response['isEmailChanges'] = true;
       }
       if (isset($input['name'])) {
-        $nameData = ['name' => $input['name']];
+        $nameData = ['name' => ucwords(strtolower($input['name']))];
         $this->addKeyValue($updateArray, $nameData);
       }
       if (isset($input['new_password'])) {
