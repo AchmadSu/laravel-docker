@@ -30,12 +30,24 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $id = $request->query('id');
         $email = $request->query('email');
-        if (!empty($email)) {
+        if (!empty($id)) {
+            $response = $this->userService->getUserById($id);
+        } else if (!empty($email)) {
             $response = $this->userService->getUserByEmail($email);
         } else {
             $response = $this->userService->getAll($request);
         }
+        return response()->json(
+            $response,
+            $response['statusCode']
+        );
+    }
+
+    public function getUserById(int $id)
+    {
+        $response = $this->userService->getUserById($id);
         return response()->json(
             $response,
             $response['statusCode']

@@ -9,22 +9,20 @@ interface UserService extends BaseService
 {
 
     /**
-     * setError
-     *
-     * @param  int $statusCode
-     * @param  bool $isSuccess
-     * @param  string $message
-     * @return void
-     */
-    public function setError(int $statusCode, string $message);
-
-    /**
      * getAll
      *
      * @param Illuminate\Http\Request $request
      * @return array
      */
     public function getAll(Request $request);
+
+    /**
+     * getUserById
+     *
+     * @param  int $id
+     * @return array
+     */
+    public function getUserById(int $id);
 
     /**
      * checkEmail
@@ -66,20 +64,4 @@ interface UserService extends BaseService
      * @return array
      */
     public function updateUser(Request $request);
-
-    /**
-     * validateRegister
-     *
-     * @param  mixed $input
-     * @return array
-     */
-    public function validateRegister($input);
-
-    /**
-     * validateUpdate
-     *
-     * @param  mixed $input
-     * @return array
-     */
-    public function validateUpdate($input);
 }

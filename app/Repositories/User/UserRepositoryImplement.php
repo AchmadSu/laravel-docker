@@ -3,6 +3,7 @@
 namespace App\Repositories\User;
 
 use LaravelEasyRepository\Implementations\Eloquent;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -35,16 +36,34 @@ class UserRepositoryImplement extends Eloquent implements UserRepository
      */
     public function getAll(Request $request)
     {
-        $data = $this->model->get();
-        $data = $data
-            ->when(isset($request->skip), function ($query) use ($request) {
-                return $query->skip($request->skip);
-            })
-            ->when(isset($request->take), function ($query) use ($request) {
-                return $query->take($request->take);
-            });
+        try {
+            $data = $this->model->get();
+            $data = $data
+                ->when(isset($request->skip), function ($query) use ($request) {
+                    return $query->skip($request->skip);
+                })
+                ->when(isset($request->take), function ($query) use ($request) {
+                    return $query->take($request->take);
+                });
+            return array_values($data->toArray());
+        } catch (ModelNotFoundException $e) {
+            return [];
+        }
+    }
 
-        return array_values($data->toArray());
+    /**
+     * getUserById
+     *
+     * @param  int $id
+     * @return array
+     */
+    public function getUserById(int $id)
+    {
+        try {
+            return $this->model->findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return [];
+        }
     }
 
     /**
@@ -55,7 +74,11 @@ class UserRepositoryImplement extends Eloquent implements UserRepository
      */
     public function getUserByEmail(string $email)
     {
-        return $this->model->where('email', $email)->get()->first();
+        try {
+            return $this->model->where('email', $email)->get()->first();
+        } catch (ModelNotFoundException $e) {
+            return [];
+        }
     }
 
     /**

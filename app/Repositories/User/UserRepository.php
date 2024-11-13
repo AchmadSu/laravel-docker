@@ -16,6 +16,14 @@ interface UserRepository extends Repository
     public function getAll(Request $request);
 
     /**
+     * getUserById
+     *
+     * @param  int $id
+     * @return array
+     */
+    public function getUserById(int $id);
+
+    /**
      * checkEmail
      *
      * @param  string $email
