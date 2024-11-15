@@ -23,4 +23,12 @@ interface BookRepository extends Repository
      * @return array
      */
     public function getById(int $id);
+
+    /**
+     * addBook
+     *
+     * @param  Illuminate\Http\Request $request
+     * @return array
+     */
+    public function create($data);
 }

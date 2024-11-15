@@ -39,11 +39,12 @@ class UserServiceImplement extends Service implements UserService
       $data = [
         "data" => $this->mainRepository->getAll($request)
       ];
+      $this->setData($data);
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
 
-    $this->setResponse($data);
+    $this->setResponse();
     return $this->getResponse();
   }
 
@@ -55,10 +56,11 @@ class UserServiceImplement extends Service implements UserService
       $data = [
         "data" => $this->mainRepository->getUserById($id)
       ];
+      $this->setData($data);
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
-    $this->setResponse($data);
+    $this->setResponse();
     return $this->getResponse();
   }
 
@@ -76,11 +78,12 @@ class UserServiceImplement extends Service implements UserService
       $data = [
         "data" => $this->mainRepository->getUserByEmail($email)
       ];
+      $this->setData($data);
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
 
-    $this->setResponse($data);
+    $this->setResponse();
     return $this->getResponse();
   }
 
@@ -106,14 +109,15 @@ class UserServiceImplement extends Service implements UserService
           "user" => $user,
           "token" => $token
         ];
+        $this->setData($data);
       } else {
         $this->setError(401, "Unauthorized. Please check email or password!");
       }
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
 
-    $this->setResponse($data);
+    $this->setResponse();
     return $this->getResponse();
   }
 
@@ -125,7 +129,7 @@ class UserServiceImplement extends Service implements UserService
       $this->setIsSuccess(true);
       $this->setStatusCode(200);
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
   }
 
@@ -147,7 +151,7 @@ class UserServiceImplement extends Service implements UserService
         $this->setError($validateData['statusCode'], $validateData['message']);
       }
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
 
     $this->setResponse();
@@ -180,7 +184,7 @@ class UserServiceImplement extends Service implements UserService
         $this->setError($validateData['statusCode'], $validateData['message']);
       }
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
     $this->setResponse();
     return $this->getResponse();

@@ -9,7 +9,7 @@ interface BookService extends BaseService
 {
 
     /**
-     * getAll
+     * getAllBooks
      *
      * @param  Illuminate\Http\Request $request
      * @return array
@@ -17,10 +17,18 @@ interface BookService extends BaseService
     public function getAll(Request $request);
 
     /**
-     * getById
+     * getBooksById
      *
      * @param  int $id
      * @return array
      */
     public function getById(int $id);
+
+    /**
+     * createBooks
+     *
+     * @param  mixed $data
+     * @return void
+     */
+    public function create($data);
 }

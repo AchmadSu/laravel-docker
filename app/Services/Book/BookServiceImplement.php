@@ -28,11 +28,12 @@ class BookServiceImplement extends Service implements BookService
       $data = [
         "data" => $this->mainRepository->getAll($request)
       ];
+      $this->setData($data);
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
 
-    $this->setResponse($data);
+    $this->setResponse();
     return $this->getResponse();
   }
 
@@ -44,11 +45,30 @@ class BookServiceImplement extends Service implements BookService
       $data = [
         "data" => $this->mainRepository->getById($id)
       ];
+      $this->setData($data);
     } catch (\Exception $e) {
-      $this->setError($e->getCode(), $e->getMessage());
+      $this->setError((int)$e->getCode(), $e->getMessage());
     }
 
-    $this->setResponse($data);
+    $this->setResponse();
+    return $this->getResponse();
+  }
+
+  public function create($data)
+  {
+    $this->setMessage("Create book successfully!");
+    try {
+      $validateData = validateCreateBook($data);
+      if ($validateData['isSuccess']) {
+        $this->mainRepository->create($data);
+      } else {
+        $this->setError($validateData['statusCode'], $validateData['message']);
+      }
+    } catch (\Exception $e) {
+      $this->setError((int)$e->getCode(), $e->getMessage());
+    }
+
+    $this->setResponse();
     return $this->getResponse();
   }
 }

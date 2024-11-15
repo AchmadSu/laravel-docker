@@ -32,5 +32,6 @@ Route::controller(UserController::class)->group(function () {
 Route::controller(BookController::class)->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('books', 'index');
+        Route::post('books', 'create');
     });
 });

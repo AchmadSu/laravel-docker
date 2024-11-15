@@ -34,4 +34,15 @@ class BookController extends Controller
             $response['statusCode']
         );
     }
+
+    public function create(Request $request)
+    {
+        $data = $request->all();
+        $response = $this->bookService->create($data);
+
+        return response()->json(
+            $response,
+            $response['statusCode']
+        );
+    }
 }

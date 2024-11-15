@@ -21,6 +21,7 @@ class Book extends Model
         'code',
         'year',
         'volume',
+        'author_id',
         'genre_id',
         'city_id',
         'publisher_id'

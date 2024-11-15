@@ -37,7 +37,18 @@ class UserRepositoryImplement extends Eloquent implements UserRepository
     public function getAll(Request $request)
     {
         try {
-            $data = $this->model->get();
+            $data = $this->model
+                ->when(isset($request->keyword), function ($query) use ($request) {
+                    $newQuery = $query
+                        ->where('name', 'LIKE', '%' . $request->keyword . '%')
+                        ->orwhere('email', 'LIKE', '%' . $request->keyword . '%');
+                    return $newQuery;
+                })
+                ->when(isset($request->orderBy), function ($query) use ($request) {
+                    return $query->orderBy($request->orderBy, $request->sort);
+                })
+                ->get();
+            $result['total'] = $data->count();
             $data = $data
                 ->when(isset($request->skip), function ($query) use ($request) {
                     return $query->skip($request->skip);
@@ -45,7 +56,8 @@ class UserRepositoryImplement extends Eloquent implements UserRepository
                 ->when(isset($request->take), function ($query) use ($request) {
                     return $query->take($request->take);
                 });
-            return array_values($data->toArray());
+            $result['data'] = array_values($data->toArray());
+            return $result;
         } catch (ModelNotFoundException $e) {
             return [];
         }
