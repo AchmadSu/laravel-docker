@@ -122,6 +122,8 @@ class UserServiceImplement extends Service implements UserService
     $this->setMessage("Logout Successfuly!");
     try {
       $request->user()->currentAccessToken()->delete();
+      $this->setIsSuccess(true);
+      $this->setStatusCode(200);
     } catch (\Exception $e) {
       $this->setError($e->getCode(), $e->getMessage());
     }
@@ -161,15 +163,18 @@ class UserServiceImplement extends Service implements UserService
   public function updateUser(Request $request)
   {
     $this->setMessage("Update user successfully!");
-
     try {
       $validateData = validateUpdateUser($request);
       if ($validateData['isSuccess']) {
         $this->mainRepository->updateUser($validateData['updateData'], Auth::user()->id);
         if (isset($validateData['isEmailChanges']) && $validateData['isEmailChanges']) {
           $this->logout($request);
-          $message = "Update user with email changes, you have to relog in! " . $this->getMessage();
-          $this->setMessage($message);
+          if ($this->getStatusCode() === 200 && $this->getIsSuccess()) {
+            $message = "Update user with email changes, you have to relog in! " . $this->getMessage();
+            $this->setMessage($message);
+          } else {
+            throw new \Exception($this->getMessage(), $this->getStatusCode());
+          }
         }
       } else {
         $this->setError($validateData['statusCode'], $validateData['message']);
