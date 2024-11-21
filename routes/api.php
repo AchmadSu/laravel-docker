@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ValuationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,5 +53,14 @@ Route::controller(LessonController::class)->group(function () {
         Route::post('lesson', 'create');
         Route::put('lesson', 'update');
         Route::delete('lesson', 'destroy');
+    });
+});
+
+Route::controller(ValuationController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('valuations', 'index');
+        Route::post('valuations', 'create');
+        Route::put('valuations', 'update');
+        Route::delete('valuations', 'destroy');
     });
 });

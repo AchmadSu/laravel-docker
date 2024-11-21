@@ -21,4 +21,9 @@ class Lesson extends Model
     {
         return $this->belongsToMany(Module::class, 'module_lessons', 'lesson_id', 'module_id');
     }
+
+    public function valuations()
+    {
+        return $this->belongsToMany(Valuation::class, 'id', 'lesson_id');
+    }
 }

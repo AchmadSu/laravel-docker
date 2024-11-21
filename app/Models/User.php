@@ -44,6 +44,6 @@ class User extends Authenticatable
 
     public function valuation()
     {
-        return $this->belongsToMany(Valuation::class, 'valuations', 'module_id', 'lesson_id');
+        return $this->belongsToMany(Valuation::class, 'valuations', 'user_id');
     }
 }

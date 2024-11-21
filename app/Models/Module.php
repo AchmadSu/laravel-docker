@@ -17,6 +17,11 @@ class Module extends Model
         'desc'
     ];
 
+    // public function valuations()
+    // {
+    //     return $this->belongsToMany(Valuation::class, 'id', 'module_id');
+    // }
+
     public function lessons()
     {
         return $this->belongsToMany(Lesson::class, 'module_lessons', 'module_id', 'lesson_id');

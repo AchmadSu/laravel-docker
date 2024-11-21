@@ -52,7 +52,7 @@ interface ModuleRepository extends Repository
      * destroy
      *
      * @param  mixed $ids
-     * @return void
+     * @return array
      */
     public function destroy(array $ids);
 }

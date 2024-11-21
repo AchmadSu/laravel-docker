@@ -32,7 +32,8 @@
             "app/Helpers/User/Helpers.php",
             "app/Helpers/Book/Helpers.php",
             "app/Helpers/Module/Helpers.php",
-            "app/Helpers/Lesson/Helpers.php"
+            "app/Helpers/Lesson/Helpers.php",
+            "app/Helpers/Valuation/Helpers.php"
         ]
     },
     "autoload-dev": {
