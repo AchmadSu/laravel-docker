@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\LessonController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ValuationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,4 +29,38 @@ Route::controller(UserController::class)->group(function () {
     });
     Route::post('register', 'addUser');
     Route::post('auth', 'login');
+});
+
+Route::controller(BookController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('books', 'index');
+        Route::post('books', 'create');
+    });
+});
+
+Route::controller(ModuleController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('modules', 'index');
+        Route::post('modules', 'create');
+        Route::put('modules', 'update');
+        Route::delete('modules', 'destroy');
+    });
+});
+
+Route::controller(LessonController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('lesson', 'index');
+        Route::post('lesson', 'create');
+        Route::put('lesson', 'update');
+        Route::delete('lesson', 'destroy');
+    });
+});
+
+Route::controller(ValuationController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('valuations', 'index');
+        Route::post('valuations', 'create');
+        Route::put('valuations', 'update');
+        Route::delete('valuations', 'destroy');
+    });
 });
