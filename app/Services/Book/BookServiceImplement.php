@@ -67,7 +67,6 @@ class BookServiceImplement extends Service implements BookService
     } catch (\Exception $e) {
       $this->setError((int)$e->getCode(), $e->getMessage());
     }
-
     $this->setResponse();
     return $this->getResponse();
   }

@@ -30,7 +30,9 @@
         "files": [
             "app/Helpers/Helpers.php",
             "app/Helpers/User/Helpers.php",
-            "app/Helpers/Book/Helpers.php"
+            "app/Helpers/Book/Helpers.php",
+            "app/Helpers/Module/Helpers.php",
+            "app/Helpers/Lesson/Helpers.php"
         ]
     },
     "autoload-dev": {
